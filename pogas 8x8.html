@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8x8 Pogu Režģis</title>
+        <meta name="theme-color" content="#1a1a1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pogas">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            padding: 15px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 6px;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .grid-button {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .grid-button:active {
+            transform: scale(0.92);
+        }
+        .grid-button.active {
+            background-color: #4caf50;
+            border-color: #45a049;
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff3b30;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>8x8 Interaktīvais Režģis</h1>
+    <div class="grid-container" id="grid"></div>
+    <button class="reset-btn" id="resetBtn">Notīrīt visu</button>
+
+    <script>
+        const gridContainer = document.getElementById('grid');
+        const resetBtn = document.getElementById('resetBtn');
+        const totalButtons = 64;
+
+        // Ielādē saglabātos stāvokļus no localStorage vai izveido jaunu masīvu
+        let buttonStates = JSON.parse(localStorage.getItem('gridStates')) || new Array(totalButtons).fill(false);
+
+        // Izveido 8x8 pogu režģi
+        for (let i = 0; i < totalButtons; i++) {
+            const button = document.createElement('button');
+            button.classList.add('grid-button');
+            
+            // Ja stāvoklis ir aktīvs, piešķir krāsu uzreiz ielādējot
+            if (buttonStates[i]) {
+                button.classList.add('active');
+            }
+
+            // Klikšķa/pieskāriena notikums
+            button.addEventListener('click', () => {
+                buttonStates[i] = !buttonStates[i];
+                button.classList.toggle('active');
+                localStorage.setItem('gridStates', JSON.stringify(buttonStates));
+            });
+
+            gridContainer.appendChild(button);
+        }
+
+        // Notīrīšanas pogas funkcionalitāte
+        resetBtn.addEventListener('click', () => {
+            buttonStates = new Array(totalButtons).fill(false);
+            localStorage.setItem('gridStates', JSON.stringify(buttonStates));
+            document.querySelectorAll('.grid-button').forEach(btn => btn.classList.remove('active'));
+        });
+    </script>
+</body>
+</html>
